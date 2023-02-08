@@ -1,6 +1,6 @@
 package Character_Classes
 
-class Character(
+abstract class Character(
   var max_health_points: Int,
   var current_health_points: Int,
   var attack_power: Int,
@@ -16,7 +16,7 @@ class Character(
   var party_exp: Int,
   var lvl:Int,
   var death_status: Boolean
-  ){
+  ) {
 
   def takeDamage(damage: Int): Unit = {
     current_health_points -= damage
@@ -26,23 +26,24 @@ class Character(
 
   }
 
-  def physical_Attack(enemy_character:Character):Unit ={
+  def physical_Attack(enemy_character: Character): Unit = {
     val ph_damage = attack_power - enemy_character.defence
     enemy_character.takeDamage(ph_damage)
   }
 
-  def magic_Attack(enemy_character:Character, magic_point_cost: Int): Unit= {
+  def magic_Attack(enemy_character: Character, magic_point_cost: Int): Unit = {
     val magic_damage = magic_attack - enemy_character.defence
-    if(current_magic_points >= magic_point_cost){
+    if (current_magic_points >= magic_point_cost) {
       current_magic_points -= magic_point_cost
       val mag_damage = magic_attack - enemy_character.magic_defence
       enemy_character.takeDamage(magic_damage)
     }
 
   }
-  def level_up():Unit ={
-    if (death_status == false){
-      while (exp_required_to_lvl_up < earned_exp){
+
+  def level_up(): Unit = {
+    if (death_status == false) {
+      while (exp_required_to_lvl_up < earned_exp) {
         earned_exp -= exp_required_to_lvl_up
         lvl += 1
         exp_required_to_lvl_up *= 2
@@ -56,7 +57,8 @@ class Character(
     }
 
   }
-  def exp_gain(added_exp: Int):Unit= {
+
+  def exp_gain(added_exp: Int): Unit = {
     if (death_status == true) {
       earned_exp = 0
     }
@@ -69,18 +71,21 @@ class Character(
     }
 
   }
-  def battleOptions():List[String]={
-   val battle_options = List("Physical Attack","Magic Attack","Heal","Use Ulta")
-     battle_options.take(4)
+
+  def battleOptions(): List[String] = {
+    val battle_options = List("Physical Attack", "Magic Attack", "Heal")
+    battle_options.take(4)
   }
-  def takeAction(action: String, character: Character): Unit={
+
+  def takeAction(action: String, character: Character): Unit = {
     val available_battle_options = battleOptions()
-    if (available_battle_options.contains(action)){
+    if (available_battle_options.contains(action)) {
 
     }
   }
-  class Warrior(var max_hp: Int,var current_health: Int,var attackpower: Int,var defense_power: Int,var magicattack: Int,var magic_defense: Int,var max_magicpoints: Int,var current_magicpoints: Int,var starting_experience: Int,var gained_experience: Int,var earned_experience: Int,var party_experience: Int,var character_level: Int,var character_death_status: Boolean)
-    extends Character(max_hp, current_health, attack_power, defense_power: Int, magic_attack, magic_defense, max_magic_points, current_magic_points, 100, starting_experience, gained_experience, earned_experience, party_experience, character_level, character_death_status) {
+}
+  class Warrior(var max_hp: Int, var current_health: Int, var W_attackpower: Int, var defense_power: Int, var W_magic_attack: Int, var W_magic_defense: Int, var W_max_magic_points: Int, var W_current_magic_points: Int, var starting_experience: Int, var gained_experience: Int, var earned_experience: Int, var party_experience: Int, var character_level: Int, var character_death_status: Boolean)
+    extends Character(max_hp, current_health, W_attackpower, defense_power: Int, W_magic_attack, W_magic_defense, W_max_magic_points, W_current_magic_points, 100, starting_experience, gained_experience, earned_experience, party_experience, character_level, character_death_status) {
 
     override def battleOptions(): List[String] = {
       List("Physical Attack", "Defend", "Charge Attack")
@@ -88,7 +93,7 @@ class Character(
 
     override def takeAction(action: String, target: Character): Unit = {
       action match {
-        case "Physical Attack" => physicalAttack(target)
+        case "Physical Attack" => physical_Attack(target)
         case "Defend" => defend()
         case "Use item" => charge_attack()
         case "Use Ult" => ult()
@@ -96,50 +101,9 @@ class Character(
       }
     }
 
-    def physicalAttack(target: Character): Unit = {
-      target.current_health_points -= attack_power - target.defence
-    }
-
-    def defend(): Unit = {
-       defense_power += 10
-    }
-
-    def charge_attack(): Unit = {
-      attack_power += 30
-    }
-
-    def ult(): Unit = {
-
-    }
-    override def level_up(): Unit = {
-      super.level_up()
-      attack_power += 2
-      defense_power += 2
-      if (character_level >= 5) {
-        battleOptions() :+ "Use Ult"
-      }
-    }
-  }
-
-  class Wizzard(var max_hp: Int, var current_health: Int, var attackpower: Int, var defense_power: Int, var magicattack: Int, var magic_defense: Int, var max_magicpoints: Int, var current_magicpoints: Int, var starting_experience: Int, var gained_experience: Int, var earned_experience: Int, var party_experience: Int, var character_level: Int, var character_death_status: Boolean)
-    extends Character(max_hp, current_health, attack_power, defense_power: Int, magic_attack, magic_defense, max_magic_points, current_magic_points, 100, starting_experience, gained_experience, earned_experience, party_experience, character_level, character_death_status) {
-
-    override def battleOptions(): List[String] = {
-      List("Magic Attack", "Defend", "Heal")
-    }
-
-    override def takeAction(action: String, target: Character): Unit = {
-      action match {
-        case "Physical Attack" => physicalAttack(target)
-        case "Defend" => defend()
-        case "Heal" => charge_attack()
-        case "Use Ult" => ult()
-        case _ => println("Invalid action")
-      }
-    }
-
-    def physicalAttack(target: Character): Unit = {
-      target.current_health_points -= attack_power - target.defence
+    override def physical_Attack(enemy_character: Character): Unit = {
+      val ph_damage = attack_power - enemy_character.defence
+      enemy_character.takeDamage(ph_damage)
     }
 
     def defend(): Unit = {
@@ -150,17 +114,86 @@ class Character(
       attack_power += 30
     }
 
-    def ult():Unit = {
-
+    def ult(): Unit = {
+      attack_power += 70
+      current_health_points -= 70
     }
+
     override def level_up(): Unit = {
       super.level_up()
-      attack_power += 2
-      defense_power += 2
-      if (character_level >= 5) {
-        battleOptions() :+ "Use Ult"
+      while (exp_required_to_lvl_up < earned_exp) {
+        earned_exp -= exp_required_to_lvl_up
+        lvl += 1
+        exp_required_to_lvl_up *= 2
+        attack_power *= 2
+        defence *= 2
+        magic_defence *= 2
+        magic_attack *= 2
+        max_health_points *= 2
+        attack_power *= 2
+        defense_power *= 2
+        if (character_level >= 5) {
+          battleOptions() :+ "Use Ult"
+        }
       }
     }
   }
-}
+    class Wizzard(var max_hp: Int, var current_health: Int, var W_attack_power: Int, var defense_power: Int, var W_magic_attack: Int, var magic_defense: Int, var W_max_magic_points: Int, var W_current_magic_points: Int, var starting_experience: Int, var gained_experience: Int, var earned_experience: Int, var party_experience: Int, var character_level: Int, var character_death_status: Boolean)
+      extends Character(max_hp, current_health, W_attack_power, defense_power: Int, W_magic_attack, magic_defense, W_max_magic_points, W_current_magic_points, 100, starting_experience, gained_experience, earned_experience, party_experience, character_level, character_death_status) {
+
+      override def battleOptions(): List[String] = {
+        List("Magic Attack", "Defend", "Heal")
+      }
+
+      override def takeAction(action: String, target: Character): Unit = {
+        action match {
+          case "Physical Attack" => magic_Attack(target,20)
+          case "Defend" => defend()
+          case "Heal" => heal()
+          case "Use Ult" => ult()
+          case _ => println("Invalid action")
+        }
+      }
+
+    override def magic_Attack(enemy_character: Character, magic_point_cost: Int): Unit = {
+        val magic_damage = magic_attack - enemy_character.defence
+        if (current_magic_points >= magic_point_cost) {
+          current_magic_points -= magic_point_cost
+          val mag_damage = magic_attack - enemy_character.magic_defence
+          enemy_character.takeDamage(magic_damage)
+        }
+
+      }
+
+      def defend(): Unit = {
+        defense_power += 10
+      }
+
+      def heal(): Unit = {
+        current_health_points += 20
+      }
+
+      def ult(): Unit = {
+        current_health_points += 50
+        magic_attack -= 20
+      }
+
+      override def level_up(): Unit = {
+        super.level_up()
+        while (exp_required_to_lvl_up < earned_exp) {
+          earned_exp -= exp_required_to_lvl_up
+          lvl += 1
+          exp_required_to_lvl_up *= 2
+          attack_power *= 2
+          defence *= 2
+          magic_defence *= 2
+          magic_attack *= 2
+          max_health_points *= 2
+          defense_power *= 2
+          if (character_level >= 5) {
+            battleOptions() :+ "Use Ult"
+          }
+        }
+      }
+    }
 
